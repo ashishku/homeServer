@@ -36,6 +36,7 @@ def switches():
         for switch in rooms[room]["switches"]:
             _room[switch] = {
                 "label": get_switch_attr(room, switch, "label"),
+                "type": get_switch_attr(room, switch, "type"),
                 "on": GPIO.input(get_switch_attr(room, switch)) == 1
             }
 
