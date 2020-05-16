@@ -28,6 +28,45 @@ with open(config_file) as json_data_file:
 
 @app.route('/')
 def switches():
+    return {
+        "success": True,
+        "rooms": get_response_payload()
+    }
+
+
+@app.route('/<room>/<switch>/on')
+def switch_on(room, switch):
+    try:
+        pin = get_switch_attr(room, switch)
+        GPIO.output(pin, GPIO.HIGH)
+        return {
+            "success": True,
+            "rooms": get_response_payload()
+        }
+    except Exception as err:
+        return {
+            "success": False,
+            "error": str(err)
+        }
+
+
+@app.route('/<room>/<switch>/off')
+def switch_off(room, switch):
+    try:
+        pin = get_switch_attr(room, switch)
+        GPIO.output(pin, GPIO.LOW)
+        return {
+            "success": True,
+            "rooms": get_response_payload()
+        }
+    except Exception as err:
+        return {
+            "success": False,
+            "error": str(err)
+        }
+
+
+def get_response_payload():
     payload = []
     for room in rooms:
         _room = {
@@ -44,41 +83,7 @@ def switches():
             })
 
         payload.append(_room)
-
-    return {
-        "success": True,
-        "rooms": payload
-    }
-
-
-@app.route('/<room>/<switch>/on')
-def switch_on(room, switch):
-    try:
-        pin = get_switch_attr(room, switch)
-        GPIO.output(pin, GPIO.HIGH)
-        return {
-            "success": True
-        }
-    except Exception as err:
-        return {
-            "success": False,
-            "error": str(err)
-        }
-
-
-@app.route('/<room>/<switch>/off')
-def switch_off(room, switch):
-    try:
-        pin = get_switch_attr(room, switch)
-        GPIO.output(pin, GPIO.LOW)
-        return {
-            "success": True
-        }
-    except Exception as err:
-        return {
-            "success": False,
-            "error": str(err)
-        }
+    return payload
 
 
 def get_switch_attr(room, switch, attr="pin"):
