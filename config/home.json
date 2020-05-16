@@ -1,0 +1,13 @@
+{
+  "gpioMode": "BOARD",
+  "rooms": {
+    "bedroom": {
+      "fan": 13,
+      "light": 11
+    },
+    "corner": {
+      "fan": 15,
+      "light": 16
+    }
+  }
+}
