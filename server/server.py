@@ -18,8 +18,8 @@ with open(config_file) as json_data_file:
 
         rooms = config["rooms"]
         for room in rooms:
-            for switch in rooms[room]:
-                GPIO.setup(rooms[room][switch], GPIO.OUT)
+            for switch in rooms[room]["switches"]:
+                GPIO.setup(rooms[room]["switches"][switch]["pin"], GPIO.OUT)
 
     except Exception as err:
         print("Error Starting server")
@@ -28,16 +28,29 @@ with open(config_file) as json_data_file:
 
 @app.route('/')
 def switches():
+    payload = []
+    for room in rooms:
+        _room = {
+            "label": rooms[room]["label"]
+        }
+        for switch in rooms[room]["switches"]:
+            _room[switch] = {
+                "label": get_switch_attr(room, switch, "label"),
+                "on": GPIO.input(get_switch_attr(room, switch)) == 1
+            }
+
+        payload.append(_room)
+
     return {
         "success": True,
-        "rooms": rooms
+        "rooms": payload
     }
 
 
 @app.route('/<room>/<switch>/on')
 def switch_on(room, switch):
     try:
-        pin = rooms[room][switch]
+        pin = get_switch_attr(room, switch)
         GPIO.output(pin, GPIO.HIGH)
         return {
             "success": True
@@ -48,10 +61,11 @@ def switch_on(room, switch):
             "error": str(err)
         }
 
+
 @app.route('/<room>/<switch>/off')
 def switch_off(room, switch):
     try:
-        pin = rooms[room][switch]
+        pin = get_switch_attr(room, switch)
         GPIO.output(pin, GPIO.LOW)
         return {
             "success": True
@@ -61,6 +75,11 @@ def switch_off(room, switch):
             "success": False,
             "error": str(err)
         }
+
+
+def get_switch_attr(room, switch, attr="pin"):
+    return rooms[room]["switches"][switch][attr]
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
