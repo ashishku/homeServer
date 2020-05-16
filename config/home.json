@@ -2,12 +2,19 @@
   "gpioMode": "BOARD",
   "rooms": {
     "bedroom": {
-      "fan": 13,
-      "light": 11
-    },
-    "corner": {
-      "fan": 15,
-      "light": 16
+      "label": "Master Bedroom",
+      "switches": {
+        "fan": {
+          "type": "fan",
+          "label": "Fan",
+          "pin": 13
+        },
+        "light": {
+          "type": "bulb",
+          "label": "Tube Light",
+          "pin": 11
+        }
+      }
     }
   }
 }
