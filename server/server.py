@@ -31,11 +31,13 @@ def switches():
     payload = []
     for room in rooms:
         _room = {
+            "id": room,
             "label": rooms[room]["label"],
             "switches": []
         }
         for switch in rooms[room]["switches"]:
             _room["switches"].append({
+                "id": switch,
                 "label": get_switch_attr(room, switch, "label"),
                 "type": get_switch_attr(room, switch, "type"),
                 "on": GPIO.input(get_switch_attr(room, switch)) == 1
