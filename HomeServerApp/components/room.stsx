@@ -1,0 +1,42 @@
+import React from "react";
+import { StyleSheet, View, SectionList, Text } from "react-native";
+
+import {Switch} from "./switch";
+
+interface SwitchType {
+  type: string;
+  on: boolean;
+  handler: () => void
+}
+export function Room ({label, switches, handler}) {
+  // @ts-ignore
+  return (
+    <View style={styles.container}>
+      <SectionList
+          sections={switches}
+          renderItem={({item}) => <Switch type={item.type} on={item.on} handler={handler} />}
+          renderSectionHeader={() => <Text style={styles.sectionHeader}>{label}</Text>}
+        />
+    </View>
+  );
+}
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20
+  },
+  sectionHeader: {
+    paddingTop: 2,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 2,
+    fontSize: 24,
+    fontWeight: 'bold',
+    backgroundColor: 'rgba(247,247,247,1.0)',
+  }
+});
