@@ -1,3 +1,4 @@
+from functools import partial
 from flask import Flask
 import RPi.GPIO as GPIO
 import json
@@ -8,6 +9,15 @@ GPIO.setwarnings(False)
 config_file = os.environ['HOME_SERVER_CONFIG']
 config = {}
 rooms = {}
+
+
+def button_callback(pin, pin2):
+    current_state = GPIO.input(pin2)
+    if current_state == 1:
+        GPIO.output(pin, GPIO.LOW)
+    else:
+        GPIO.output(pin, GPIO.HIGH)
+
 with open(config_file) as json_data_file:
     try:
         config = json.load(json_data_file)
@@ -20,6 +30,11 @@ with open(config_file) as json_data_file:
         for room in rooms:
             for switch in rooms[room]["switches"]:
                 GPIO.setup(rooms[room]["switches"][switch]["pin"], GPIO.OUT)
+                GPIO.setup(rooms[room]["switches"][switch]["pin2"], GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Set pin 10 to be an input pin and set
+                GPIO.add_event_detect(rooms[room]["switches"][switch]["pin2"],
+                                      GPIO.FALLING,
+                                      callback=partial(button_callback, rooms[room]["switches"][switch]["pin"]),
+                                      bouncetime=200)
 
     except Exception as err:
         print("Error Starting server")
@@ -92,3 +107,4 @@ def get_switch_attr(room, switch, attr="pin"):
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
+

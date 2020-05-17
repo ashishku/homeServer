@@ -7,12 +7,14 @@
         "fan": {
           "type": "fan",
           "label": "Fan",
-          "pin": 13
+          "pin": 13,
+          "pin2": 15
         },
         "light": {
           "type": "bulb",
           "label": "Tube Light",
-          "pin": 11
+          "pin": 11,
+          "pin2": 16
         }
       }
     }
